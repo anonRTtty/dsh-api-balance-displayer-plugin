@@ -27,10 +27,10 @@ The API key is resolved through DSH's own credential seam (`~/.dsh/.credentials.
 Clone:
 
 ```bash
-git clone https://github.com/anonRTtty/dsh-plugin-balance.git
+git clone https://github.com/anonRTtty/dsh-api-balance-displayer-plugin.git
 ```
 
-Or download the ZIP: open the [repository page](https://github.com/anonRTtty/dsh-plugin-balance) → **Code → Download ZIP**, then extract `dsh-plugin-balance/`.
+Or download the ZIP: open the [repository page](https://github.com/anonRTtty/dsh-api-balance-displayer-plugin) → **Code → Download ZIP**, then extract `dsh-plugin-balance/`.
 
 ## Install
 
@@ -41,7 +41,7 @@ Or download the ZIP: open the [repository page](https://github.com/anonRTtty/dsh
 No clone needed; the script downloads the release ZIP, copies it into the profile and enables it:
 
 ```powershell
-irm https://raw.githubusercontent.com/anonRTtty/dsh-plugin-balance/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/anonRTtty/dsh-api-balance-displayer-plugin/main/scripts/install.ps1 | iex
 ```
 
 Or after cloning/extracting:
@@ -56,7 +56,7 @@ Non-default profile: `powershell -ExecutionPolicy Bypass -File .\scripts\install
 ### Method 2 — Official CLI (`dsh plugin`)
 
 ```powershell
-dsh plugin --profile web add github:anonRTtty/dsh-plugin-balance
+dsh plugin --profile web add github:anonRTtty/dsh-api-balance-displayer-plugin
 ```
 
 This plugin declares `dsh.bundle`, so the official command adds it to `dsh.profile.bundles` and applies the in-package `cordis.patch.yml` automatically — **no manual config editing needed**.
@@ -84,7 +84,7 @@ This plugin declares `dsh.bundle`, so the official command adds it to `dsh.profi
 One-command (Windows PowerShell):
 
 ```powershell
-irm https://raw.githubusercontent.com/anonRTtty/dsh-plugin-balance/main/scripts/uninstall.ps1 | iex
+irm https://raw.githubusercontent.com/anonRTtty/dsh-api-balance-displayer-plugin/main/scripts/uninstall.ps1 | iex
 ```
 
 Or locally: `powershell -ExecutionPolicy Bypass -File .\scripts\uninstall.ps1`
