@@ -1,4 +1,4 @@
-# dsh-plugin-balance — Windows install script (one-command install)
+﻿# dsh-plugin-balance — Windows install script (one-command install)
 # Copies this plugin into the DSH profile's hoisted node_modules and enables
 # it in the profile's cordis.patch.yml. Requires a DSH restart (or the patch
 # HMR to pick the change up) before the plugin activates.
@@ -8,10 +8,10 @@
 #   powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1 -ProfileName headless
 #
 # Usage — remote one-command install (downloads the release ZIP automatically):
-#   irm https://raw.githubusercontent.com/anonRTtty/dsh-plugin-balance/main/scripts/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/anonRTtty/dsh-api-balance-displayer-plugin/main/scripts/install.ps1 | iex
 param(
     [string]$ProfileName = "web",
-    [string]$RepoUrl = "https://github.com/anonRTtty/dsh-plugin-balance"
+    [string]$RepoUrl = "https://github.com/anonRTtty/dsh-api-balance-displayer-plugin"
 )
 
 $ErrorActionPreference = "Stop"
