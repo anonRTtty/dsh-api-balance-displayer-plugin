@@ -1,4 +1,4 @@
-﻿# dsh-plugin-balance — Windows install script (one-command install)
+# dsh-plugin-balance — Windows install script (one-command install)
 # Copies this plugin into the DSH profile's hoisted node_modules and enables
 # it in the profile's cordis.patch.yml. Requires a DSH restart (or the patch
 # HMR to pick the change up) before the plugin activates.
@@ -55,7 +55,7 @@ if (-not [string]::IsNullOrEmpty($PSScriptRoot)) {
 # 1) copy the plugin package
 Write-Host "==> Copying plugin files..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $dest | Out-Null
-foreach ($item in @("package.json", "cordis.patch.yml", "src", "LICENSE", "README.md", "screenshot.png", "scripts")) {
+foreach ($item in @("package.json", "cordis.patch.yml", "src", "LICENSE", "README.md", "README.zh-CN.md", "screenshot.png", "scripts")) {
     $itemPath = Join-Path $src $item
     if (Test-Path $itemPath) {
         Copy-Item -Path $itemPath -Destination $dest -Recurse -Force
