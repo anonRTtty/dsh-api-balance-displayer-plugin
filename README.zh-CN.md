@@ -27,10 +27,10 @@ API Key 通过 DSH 自身的凭据通道读取（`~/.dsh/.credentials.yaml` → 
 方式一（Git clone）：
 
 ```bash
-git clone https://github.com/anonRTtty/dsh-plugin-balance.git
+git clone https://github.com/anonRTtty/dsh-api-balance-displayer-plugin.git
 ```
 
-方式二（ZIP）：打开[仓库页面](https://github.com/anonRTtty/dsh-plugin-balance) → **Code → Download ZIP**，解压后得到 `dsh-plugin-balance/` 目录。
+方式二（ZIP）：打开[仓库页面](https://github.com/anonRTtty/dsh-api-balance-displayer-plugin) → **Code → Download ZIP**，解压后得到 `dsh-plugin-balance/` 目录。
 
 ## 安装
 
@@ -41,7 +41,7 @@ git clone https://github.com/anonRTtty/dsh-plugin-balance.git
 无需 clone，直接运行（脚本会自动下载 release ZIP、复制到 profile 并启用）：
 
 ```powershell
-irm https://raw.githubusercontent.com/anonRTtty/dsh-plugin-balance/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/anonRTtty/dsh-api-balance-displayer-plugin/main/scripts/install.ps1 | iex
 ```
 
 或先 clone/解压后本地运行：
@@ -56,7 +56,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1
 ### 方式二：官方 CLI（`dsh plugin`）
 
 ```powershell
-dsh plugin --profile web add github:anonRTtty/dsh-plugin-balance
+dsh plugin --profile web add github:anonRTtty/dsh-api-balance-displayer-plugin
 ```
 
 本插件声明了 `dsh.bundle`，官方命令会把它加入 `dsh.profile.bundles` 并自动应用包内 `cordis.patch.yml`，**无需手动改任何配置文件**。
@@ -84,7 +84,7 @@ dsh plugin --profile web add github:anonRTtty/dsh-plugin-balance
 一键卸载（Windows PowerShell）：
 
 ```powershell
-irm https://raw.githubusercontent.com/anonRTtty/dsh-plugin-balance/main/scripts/uninstall.ps1 | iex
+irm https://raw.githubusercontent.com/anonRTtty/dsh-api-balance-displayer-plugin/main/scripts/uninstall.ps1 | iex
 ```
 
 或本地运行：`powershell -ExecutionPolicy Bypass -File .\scripts\uninstall.ps1`
