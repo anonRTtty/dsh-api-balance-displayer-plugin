@@ -1,0 +1,12 @@
+# dsh-plugin-balance bundle patch: inserts the plugin row.
+# The row's main entry is the host half (src/index.js, registers the
+# /api/plugin.balance route on ctx.webServer); its dsh.client manifest half
+# (src/client.js) is scanned into the browser roster and renders the balance
+# capsule in the session header.
+#
+# Install with the official CLI (auto-activates because this package
+# declares dsh.bundle):
+#   dsh plugin --profile web add github:anonRTtty/dsh-plugin-balance
+- insert:
+    - id: dsh-plugin-balance
+      name: dsh-plugin-balance
