@@ -12,9 +12,9 @@
 // from the free GET https://api.deepseek.com/user/balance endpoint (the
 // balance query consumes no tokens).
 //
-// The plugin body is a plain Cordis plugin loaded by the deployment
-// composition, so it runs in the harness process with full Node access —
-// global fetch is available and no subprocess/curl indirection is needed.
+// The host never returns display text: every failure is a machine-readable
+// `code` (plus an optional `status`), and the browser half localizes it to the
+// user's DSH UI language (zh / en).
 
 export const name = 'dsh-plugin-balance'
 
@@ -26,7 +26,7 @@ export const BALANCE_ROUTE = '/api/plugin.balance'
 /** Public DeepSeek balance endpoint (no token charge). */
 const BALANCE_URL = 'https://api.deepseek.com/user/balance'
 
-/** Upper bound for the balance request, matching the previous curl --max-time. */
+/** Upper bound for the balance request. */
 const TIMEOUT_MS = 10000
 
 /** Maximal JSON response writer for node:http. */
@@ -39,28 +39,23 @@ function writeJson(res, status, value) {
   res.end(body)
 }
 
-/** Human-readable reason for a non-200 HTTP status, shown in the UI capsule. */
-function reasonForHttp(status) {
-  if (status === 401) return 'API Key 无效'
-  if (status === 403) return '访问被拒绝'
-  if (status === 429) return '请求过于频繁'
-  if (status >= 500) return '服务器错误'
-  return '请求失败（HTTP ' + status + '）'
-}
-
 /**
  * Resolve the current balance. Never throws: every failure becomes
- * `{ ok: false, reason }` so the browser can show the reason in the capsule.
+ * `{ ok: false, code }` (machine-readable; the browser localizes the text).
  */
 async function fetchBalance(ctx) {
+  if (!ctx.credentials) {
+    return { ok: false, code: 'missing-service' }
+  }
+
   let hit
   try {
     hit = await ctx.credentials.resolve('DEEPSEEK_API_KEY')
   } catch (error) {
-    return { ok: false, reason: '读取 API Key 失败' }
+    return { ok: false, code: 'read-key-failed' }
   }
   if (!hit || !hit.value) {
-    return { ok: false, reason: '未配置 API Key' }
+    return { ok: false, code: 'no-key' }
   }
 
   let response
@@ -76,28 +71,33 @@ async function fetchBalance(ctx) {
     const timedOut =
       typeof error === 'object' && error !== null &&
       (error.name === 'TimeoutError' || error.name === 'AbortError')
-    return { ok: false, reason: timedOut ? '请求超时' : '网络错误' }
+    return { ok: false, code: timedOut ? 'timeout' : 'network' }
   }
 
   if (response.status !== 200) {
-    return { ok: false, reason: reasonForHttp(response.status) }
+    let code = 'http'
+    if (response.status === 401) code = 'bad-key'
+    else if (response.status === 403) code = 'forbidden'
+    else if (response.status === 429) code = 'rate-limited'
+    else if (response.status >= 500) code = 'server'
+    return { ok: false, code, status: response.status }
   }
 
   let data
   try {
     data = await response.json()
   } catch (error) {
-    return { ok: false, reason: '数据解析失败' }
+    return { ok: false, code: 'parse' }
   }
 
   const infos = data && Array.isArray(data.balance_infos) ? data.balance_infos : []
   const first = infos.find(
     (i) => i && (typeof i.total_balance === 'string' || typeof i.total_balance === 'number'),
   )
-  if (!first) return { ok: false, reason: '数据解析失败' }
+  if (!first) return { ok: false, code: 'parse' }
 
   const num = Number(first.total_balance)
-  if (!Number.isFinite(num)) return { ok: false, reason: '数据解析失败' }
+  if (!Number.isFinite(num)) return { ok: false, code: 'parse' }
 
   return {
     ok: true,
@@ -120,14 +120,14 @@ export function apply(ctx) {
         path: BALANCE_ROUTE,
         handler: async (req, res) => {
           if (req.method !== 'GET') {
-            writeJson(res, 405, { ok: false, reason: 'method-not-allowed' })
+            writeJson(res, 405, { ok: false, code: 'method', status: 405 })
             return
           }
           try {
             writeJson(res, 200, await fetchBalance(ctx))
           } catch (error) {
             ctx.logger.warn(`dsh-plugin-balance: ${String(error)}`)
-            writeJson(res, 500, { ok: false, reason: '请求失败' })
+            writeJson(res, 500, { ok: false, code: 'failed', status: 500 })
           }
         },
       }),
