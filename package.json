@@ -1,39 +1,39 @@
-{
-  "name": "dsh-plugin-balance",
-  "version": "0.1.0",
-  "description": "DeepSeek API balance display in the DSH web session header (balance capsule beside the Session log button)",
-  "type": "module",
-  "main": "src/index.js",
-  "exports": {
-    ".": "./src/index.js",
-    "./client": "./src/client.js",
-    "./package.json": "./package.json"
-  },
-  "dsh": {
-    "bundle": {
-      "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "inject": [
-        "@deepseek-ai/dsh-client-runtime",
-        "@deepseek-ai/dsh-client-locale"
-      ],
-      "platform": "web"
-    }
-  },
-  "license": "MIT",
-  "keywords": [
-    "dsh",
-    "deepseek-harness",
-    "plugin",
-    "balance",
-    "deepseek"
-  ],
-  "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh-client-runtime": "^0.1.0-rc.6"
-  },
-  "engines": {
-    "node": ">=20"
-  }
+﻿{
+    "name":  "dsh-plugin-balance",
+    "version":  "0.1.1",
+    "description":  "DeepSeek API balance display in the DSH web session header (balance capsule beside the Session log button)",
+    "type":  "module",
+    "main":  "src/index.js",
+    "exports":  {
+                    ".":  "./src/index.js",
+                    "./client":  "./src/client.js",
+                    "./package.json":  "./package.json"
+                },
+    "dsh":  {
+                "bundle":  {
+                               "patch":  "./cordis.patch.yml"
+                           },
+                "client":  {
+                               "inject":  [
+                                              "@deepseek-ai/dsh-client-runtime",
+                                              "@deepseek-ai/dsh-client-locale"
+                                          ],
+                               "platform":  "web"
+                           }
+            },
+    "license":  "MIT",
+    "keywords":  [
+                     "dsh",
+                     "deepseek-harness",
+                     "plugin",
+                     "balance",
+                     "deepseek"
+                 ],
+    "peerDependencies":  {
+                             "@deepseek-ai/cordis":  "^4.0.1",
+                             "@deepseek-ai/dsh-client-runtime":  "^0.1.0-rc.6"
+                         },
+    "engines":  {
+                    "node":  "\u003e=20"
+                }
 }
