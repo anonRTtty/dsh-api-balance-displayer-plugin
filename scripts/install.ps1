@@ -15,7 +15,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-$TAG = "v0.1.0"
+$TAG = "v0.1.1"
 
 $dshHome = if ($env:DSH_HOME) { $env:DSH_HOME } else { Join-Path $HOME ".dsh" }
 $profilesNodeModules = Join-Path $dshHome "profiles\node_modules"
