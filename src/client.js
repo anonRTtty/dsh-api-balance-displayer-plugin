@@ -22,9 +22,11 @@
  * Behavior:
  *   - Fetches the balance from the host route `/api/plugin.balance` (the API
  *     key never reaches the browser).
- *   - Auto-refreshes once per page load only: an apply-scope `autoFetched`
- *     flag ensures switching sessions/views (which may remount the header)
- *     does not trigger another fetch; F5 re-runs apply and resets it.
+ *   - Refreshes on every mount: page load (F5) and session switches both
+ *     remount the capsule, so the balance stays fresh when switching
+ *     conversations; view switches do not remount it, so no refresh there.
+ *     The last known value is kept in `lastState` and shown while the new
+ *     fetch is in flight, so switching sessions never flashes "loading".
  *   - The ↻ button refreshes on demand; the balance number is followed by ￥.
  *   - The slot is session-scoped, so the capsule hides on the blank hero
  *     page and appears when a session is open.
@@ -124,7 +126,7 @@ window.__ModuleLoader__.load({
      */
     function BalanceCapsule(props) {
       const t = props.t;
-      const [state, setState] = react.useState({ kind: "loading" });
+      const [state, setState] = react.useState(lastState || { kind: "loading" });
       const [busy, setBusy] = react.useState(false);
       const aliveRef = react.useState({ value: true })[0];
 
@@ -141,29 +143,34 @@ window.__ModuleLoader__.load({
           .then((res) => {
             if (!aliveRef.value) return;
             if (res && res.ok) {
-              setState({ kind: "ok", balance: String(res.balance) });
+              lastState = { kind: "ok", balance: String(res.balance) };
+              setState(lastState);
             } else if (res && res.code) {
-              setState({ kind: "error", code: res.code, status: res.status });
+              lastState = { kind: "error", code: res.code, status: res.status };
+              setState(lastState);
             } else {
-              setState({ kind: "error", code: "failed" });
+              lastState = { kind: "error", code: "failed" };
+              setState(lastState);
             }
           })
           .catch(() => {
-            if (aliveRef.value) setState({ kind: "error", code: "failed" });
+            if (aliveRef.value) {
+              lastState = { kind: "error", code: "failed" };
+              setState(lastState);
+            }
           })
           .finally(() => {
             if (aliveRef.value) setBusy(false);
           });
       };
 
-      // Only the first mount after page load auto-fetches; later remounts
-      // (e.g. switching sessions) do not re-fetch automatically.
+      // Refresh on every mount: page load (F5) and session switches both
+      // remount the capsule, so the balance stays fresh when switching
+      // conversations. View switches do not remount it, so no refresh there.
+      // The initial state comes from `lastState` to avoid a "loading" flash.
       react.useEffect(() => {
         aliveRef.value = true;
-        if (!autoFetched) {
-          autoFetched = true;
-          refresh();
-        }
+        refresh();
         return () => {
           aliveRef.value = false;
         };
@@ -203,8 +210,10 @@ window.__ModuleLoader__.load({
     /** Services required by the client plugin. */
     const inject = ["slots", "locale"];
 
-    /** Once per page load; reset by F5 because apply re-runs on every load. */
-    let autoFetched = false;
+    /** Last known result, reused as the initial state on remounts (session
+     * switches) so the capsule shows the previous balance instead of a
+     * "loading" flash, then refreshes in the background. */
+    let lastState = null;
 
     /**
      * Client plugin body: register the dictionaries and the header capsule.
